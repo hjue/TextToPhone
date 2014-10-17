@@ -1,0 +1,21 @@
+{
+   "browser_action": {
+      "default_icon": "icon48.png",
+      "default_popup": "popup.html",
+      "default_title": "TextToPhone"
+   },
+   "content_scripts": [ {
+      "all_frames": true,
+      "js": [ "selection.js" ],
+      "matches": [ "http://*/*" ],
+      "run_at": "document_start"
+   } ],   
+   "icons": {
+   	  "16": "icon16.png",
+   	  "48": "icon48.png"
+   },
+   "name": "TextToPhone",
+   "description": "把文字生成二维码，帮助你快速将信息共享至手机",
+   "permissions": [ "tabs","chrome://favicon/", "http://*/*", "https://*/*" ],
+   "version": "1.0.2"
+}

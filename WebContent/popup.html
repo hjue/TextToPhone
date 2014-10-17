@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+	function showQR(text) {
+		var trans_text = text;
+		var qrurl = "http://chart.googleapis.com/chart?chs=200x200&cht=qr&chl="+encodeURIComponent(trans_text)+"&choe=UTF-8&chld=L|0"
+		document.getElementById('qr').innerHTML = "<img src='"+qrurl+"' />"
+		document.getElementById('seltext').innerHTML = text;
+		document.getElementById('desc').innerHTML = "";
+	}
+	function checkPhoneNum(phone){  
+		   var flag = false;  
+		   var reg0 =  /^(([0\+]\d{2,3}-)?(0\d{2,3})-)?(\d{7,8})(-(\d{3,}))?$/; 
+		   var reg1 =/^((\(\d{2,3}\))|(\d{3}\-))?(13|15|18)\d{9}$/; 
+		   if (reg0.test(phone)) flag=true;   
+		   if (reg1.test(phone)) flag=true; 
+		   return flag;
+	}  	
+	function postQR()
+	{
+		var trans_text = document.getElementById('seltext').innerText;
+		if(checkPhoneNum(trans_text)){
+			trans_text = 'tel:' + trans_text;
+		}
+		document.getElementById('qr').innerHTML = "<img src='' />";
+		var qrurl = "http://chart.googleapis.com/chart?chs=200x200&cht=qr&chl="+encodeURIComponent(trans_text)+"&choe=UTF-8&chld=L|0";
+		document.getElementById('qr').innerHTML = "<img src='"+qrurl+"' />";
+		
+	}
+	//window.addEventListener("load", windowLoaded, false);
+	function windowLoaded() {
+		  chrome.tabs.getSelected(null, function(tab) {
+			    chrome.tabs.sendRequest(tab.id, {method: "getSelection"}, function (response) {
+			    	var seltext = response.data;
+			    	seltext = seltext.replace(/^\s\s*/, '').replace(/\s\s*$/, '')
+			    	seltext = seltext.substring(0,1000);
+			    	if(seltext==""){
+			    		seltext = tab.url;
+			    	}
+					showQR(seltext);
+			    });
+		});
+	}
+</script>
+<style>
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: center;
+	width:250px;
+}
+#seltext {
+	font-size: 13px;
+	border:1px solid #D2DBED;
+	border-radius:3px;
+	background-color:#F3F7FC;
+	color: blue; font-size: 13px; 
+	width: 250px;
+	margin-bottom:5px;
+}
+#copyright{
+float: left; font-size: 8px; color: #a7a7a7; text-align: center;
+}
+#desc{
+margin-bottom:5px;
+}
+button{
+text-align: center;
+padding:10px 10px 10px 10px;
+
+}
+</style>
+</head>
+<body onload="windowLoaded();">
+	<div id="seltext" contenteditable="true"></div>
+	<div id="qr"></div>
+	<div id="desc"></div>
+	<div><button onclick="postQR();" >Generate QR Code</button></div>
+</body>
+</html>
